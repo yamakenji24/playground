@@ -12,15 +12,23 @@
     "@types/react-dom": "^18.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-relay": "^14.0.0",
     "react-scripts": "5.0.1",
+    "relay-runtime": "^14.0.0",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "npm run relay && react-scripts start",
+    "build": "npm run relay && react-scripts build",
+    "test": "npm run relay && react-scripts test",
+    "eject": "react-scripts eject",
+    "relay": "relay-compiler"
+  },
+  "relay": {
+    "src": "./src/",
+    "schema": "./schema.graphql",
+    "language": "typescript"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +47,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-plugin-relay": "^14.0.0",
+    "graphql": "^16.5.0",
+    "relay-compiler": "^14.0.0"
   }
 }

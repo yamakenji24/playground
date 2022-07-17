@@ -1,10 +1,11 @@
 import { AutoBatch } from './Autobatch';
-import './App.css';
+import { SuspenseContainer } from './SuspenseContainer';
 
 function App() {
   return (
     <div className="App">
       <AutoBatch />
+      <SuspenseContainer />
     </div>
   );
 }
