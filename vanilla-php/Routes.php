@@ -2,6 +2,7 @@
 
 $map = [
     '/' => ["Main", "mainPage"],
+    '/test' => ["Test", "testAPI"]
 ];
 
 $map = array_map(function($executable) {
