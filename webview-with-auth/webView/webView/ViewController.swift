@@ -15,7 +15,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         webView = WKWebView(frame: view.frame)
         view.addSubview(webView)
-        let request = URLRequest(url: URL(string: "https://www.google.co.jp/")!)
+        // let url = "https://www.google.co.jp/"
+        let url = "http://localhost:3001/"
+        let request = URLRequest(url: URL(string: url)!)
         webView.load(request)
     }
 
