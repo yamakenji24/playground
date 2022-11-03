@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  front:
+    container_name: next-tailwind-frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend/app:/app/app
+      - ./frontend/pages:/app/pages
+      - ./frontend/styles:/app/styles
+      - ./frontend/public:/app/public

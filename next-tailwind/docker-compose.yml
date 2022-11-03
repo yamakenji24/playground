@@ -14,7 +14,10 @@ services:
       - "80:80"
   front:
     container_name: next-tailwind-frontend
-    build: ./frontend
-    command: npm run dev
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
     volumes:
-      - ./frontend:/app
+      - ./frontend/app:/app/app
+      - ./frontend/pages:/app/pages
+      - ./frontend/styles:/app/styles
