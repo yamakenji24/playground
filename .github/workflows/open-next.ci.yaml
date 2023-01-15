@@ -36,5 +36,3 @@ jobs:
           key: ${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: install dependencies
         run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ steps.generate_token.outputs.token }}
