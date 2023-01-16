@@ -38,4 +38,4 @@ jobs:
       - name: install dependencies
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        run: npm ci --registry https://npm.pkg.github.com/yamakenji24
+        run: npm ci 
