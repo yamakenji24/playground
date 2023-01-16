@@ -25,7 +25,7 @@ jobs:
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Configure Git
-        run: git config --global --add url."https://${{ steps.generate_token.outputs.token }}@github.com/".insteadOf "https://github.com/"
+        run: git config --global --add url."https://x-access-token:${{ steps.generate_token.outputs.token }}@github.com/".insteadOf "https://github.com/"
       - name: check secrets
         run: echo "${{secrets.TEST}}"
       - name: Setup Node.js
