@@ -22,6 +22,8 @@ jobs:
           private_key: ${{ secrets.SCHEMA_PRIVATE_KEY }}
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
       - name: Configure Git
         run: git config --global --add url."https://x-access-token:${{ steps.generate_token.outputs.token }}@github.com/".insteadOf "https://github.com/"
       - name: check secrets
