@@ -23,7 +23,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          submodules: true
+          token: ${{ secrets.TOKEN }}
+          persist-credentials: false
+      - name: check secrets
+        run: echo "${{secrets.TEST}}"
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
