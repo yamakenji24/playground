@@ -25,6 +25,8 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
           persist-credentials: false
+      - name: Configure Git
+        run: git config --global --add url."https://${{ secrets.TOKEN }}@github.com/".insteadOf "https://github.com/"
       - name: check secrets
         run: echo "${{secrets.TEST}}"
       - name: Setup Node.js
