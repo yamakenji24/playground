@@ -31,6 +31,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: echo node version
+        run: echo ${{node --version}}
       - name: Cache node_modules
         id: cache_node_modules
         uses: actions/cache@v3
