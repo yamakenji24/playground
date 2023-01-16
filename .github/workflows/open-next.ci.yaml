@@ -23,12 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.TOKEN }}
-          persist-credentials: false
-      - name: Configure Git
-        run: git config --global --add url."https://${{ steps.generate_token.outputs.token }}@github.com/".insteadOf "https://github.com/"
-      - name: check secrets
-        run: echo "${{secrets.TEST}}"
+          token: ${{ steps.generate_token.outputs.token }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -42,6 +37,6 @@ jobs:
           path: "**/node_modules"
           key: ${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: install dependencies
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: npm ci 
+        env:
+          NODE_AUTH_TOKEN: ${{ steps.generate_token.outputs.token }}
