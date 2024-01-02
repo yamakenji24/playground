@@ -54,35 +54,17 @@ function render(element: Element, container: HTMLElement | null) {
   container.appendChild(dom)
 }
 
-
-
-const sample = {
-  type: 'div',
-  props: {
-    id: 'foo',
-    children: [
-      {
-        type: 'a',
-        props: {
-          href: '/',
-          target: '_blank',
-          children: [
-            { type: 'TEXT_ELEMENT', props: { nodeValue: 'link', children: [] } },
-            {
-              type: 'span',
-              props: { id: 'baz', children: [{ type: 'TEXT_ELEMENT', props: { nodeValue: 'hogefuga', children: [] } }] }
-            }
-          ]
-        }
-      }
-    ]
-  }
-}
-
 const MyReactDom = {
   createElement,
   render
 }
 
+const element = MyReactDom.createElement(
+  "div",
+  {id: "foo", children: []},
+  MyReactDom.createElement("a", {children: []}, {type: TEXT_ELEMENT, props: {children: [], nodeValue: "bar"}}),
+  MyReactDom.createElement("p", {children: []}, {type: TEXT_ELEMENT, props: {children: [], nodeValue: "foo"}})
+)
+
 const container = document.getElementById("app")
-MyReactDom.render(sample, container)
+MyReactDom.render(element, container)
