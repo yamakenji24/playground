@@ -1,5 +1,5 @@
-import { createDom } from "./dom";
-import type { Element, Props } from "./dom";
+import { createDom, updateDom } from "./dom";
+import type { Element } from "./dom";
 
 type EffectTagType = 'UPDATE' | 'PLACEMENT' | 'DELETION'
 export type Fiber =
@@ -16,7 +16,7 @@ export type Fiber =
 let nextUnitOfWork: Fiber = null
 let wipRoot: Fiber = null
 let currentRoot: Fiber = null
-let deletions = null
+let deletions: any = null
 
 export function render(element: Element, container: HTMLElement | null) {
   if (!container) {
@@ -37,8 +37,10 @@ export function render(element: Element, container: HTMLElement | null) {
 }
 
 function workLoop(deadline: any) {
+  console.log('workLoop')
   let shouldYield = false
   while (nextUnitOfWork && !shouldYield) {
+    console.log('workLooping')
     // @ts-ignore
     nextUnitOfWork = performUnitOfWork(
       nextUnitOfWork
@@ -53,6 +55,7 @@ function workLoop(deadline: any) {
 }
 
 function commitRoot() {
+  deletions.forEach(commitWork)
   // @ts-ignore
   commitWork(wipRoot.child)
   currentRoot = wipRoot
@@ -81,57 +84,6 @@ function commitWork(fiber: Fiber) {
   commitWork(fiber.sibling)
 }
 
-const isEvent = (key: string) => key.startsWith("on")
-const isProperty = (key: string) => key !== "children" && !isEvent(key)
-const isNew = (prev: Props, next: Props) => (key: string) => prev[key] !== next[key]
-const isGone = (_: any, next: Props) => (key: string) => !(key in next)
-function updateDom(dom: HTMLElement | Text, prevProps: Props, nextProps: Props) {
-  Object.keys(prevProps)
-    .filter(isEvent)
-    .filter(
-      key =>
-        !(key in nextProps) ||
-        isNew(prevProps, nextProps)(key)
-    )
-    .forEach(name => {
-      const eventType = name
-        .toLowerCase()
-        .substring(2)
-      dom.removeEventListener(
-        eventType,
-        prevProps[name]
-      )
-    })
-
-  // Remove old properties
-  Object.keys(prevProps)
-    .filter(isProperty)
-    .filter(isGone(prevProps, nextProps))
-    // @ts-ignore
-    .forEach(name => dom[name] = "")
-    
-  // Set new or changed properties
-  Object.keys(nextProps)
-    .filter(isProperty)
-    .filter(isNew(prevProps, nextProps))
-    // @ts-ignore
-    .forEach(name => dom[name] = nextProps[name])
-
-  // Add event listeners
-  Object.keys(nextProps)
-    .filter(isEvent)
-    .filter(isNew(prevProps, nextProps))
-    .forEach(name => {
-      const eventType = name
-        .toLowerCase()
-        .substring(2)
-      dom.addEventListener(
-        eventType,
-        nextProps[name]
-      )
-    })
-}
-
 function performUnitOfWork(fiber: Fiber) {
   if (!fiber) return;
   if (!fiber.dom) {
@@ -149,9 +101,9 @@ function performUnitOfWork(fiber: Fiber) {
     if (nextFiber.sibling) {
       return nextFiber.sibling
     }
-    if (nextFiber.parent) {
-      nextFiber = nextFiber.parent
-    }
+    
+    // @ts-ignore
+    nextFiber = nextFiber.parent
   }
 }
 
