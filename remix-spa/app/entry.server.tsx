@@ -1,6 +1,11 @@
 import type { EntryContext } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { renderToString } from "react-dom/server";
+import { server } from "~/mocks/server";
+
+if (process.env.NODE_ENV === "development") {
+  server.listen();
+}
 
 export default function handleRequest(
   request: Request,
