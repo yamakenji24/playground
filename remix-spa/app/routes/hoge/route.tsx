@@ -1,19 +1,20 @@
-import useSWR from "swr";
+import { useLoaderData } from "@remix-run/react";
 import { User } from "~/model/user";
 
-export default function Index() {
-  const { data: user, error } = useSWR<User, Error>("/api/user", fetcher, {suspense: true});
-  console.log(user, error);
+export async function clientLoader() {
+  const response = await fetch("/api/user");
+  const data: User = await response.json();
+  return data;
+}
 
-  // Suspenseでundefinedではないはずだが、型推論的に
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+export default function Index() {
+  const user = useLoaderData<typeof clientLoader>();
+  console.log(user)
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <h2>Routes from hoge</h2>
-      <User {...user}/>
+      <User {...user} />
     </div>
   );
 }
@@ -27,14 +28,3 @@ const User = ({firstName, lastName}: User) => {
     </div>
   );
 };
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url)
- 
-  if (!res.ok) {
-    const error = new Error('An error occurred while fetching the data.')
-    throw error
-  }
- 
-  return res.json()
-}
