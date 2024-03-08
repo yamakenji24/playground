@@ -16,10 +16,8 @@ jobs:
       - name: Set tag name
         id: tag
         run: |
-          DATE=$(date +'%Y.%m.%d')
-          RELEASE_COUNT=$(git tag --list "${DATE}.*" | wc -l)
-          RELEASE_COUNT=$((RELEASE_COUNT+1))
-          echo "::set-output name=tag::${DATE}.${RELEASE_COUNT}"
+          IMAGE_TAG="$(date +"%Y%m.%-d").$(git tag | (grep "^`date +"%Y%m.%-d"`" || true) | wc -l | awk '{print $1+1}')"
+          echo "::set-output name=tag::${IMAGE_TAG}"
       - name: Create Release Tag
         run: |
           TAG_NAME=${{ steps.tag.outputs.tag }}
