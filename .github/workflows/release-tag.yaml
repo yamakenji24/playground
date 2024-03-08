@@ -2,6 +2,13 @@ name: "Release Tag"
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TZ: Asia/Tokyo
 
 jobs:
   main:
@@ -9,4 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set tag name
+        id: tag
+        run: |
+          IMAGE_TAG="$(date +"%Y.%m.%-d").$(git tag | (grep "^`date +"%Y.%m.%-d"`" || true) | wc -l | awk '{print $1+1}')"
+          echo "::set-output name=tag::${IMAGE_TAG}"
       - name: Create Release Tag
+        run: |
+          TAG_NAME=${{ steps.tag.outputs.tag }}
+          gh release create $TAG_NAME -F <(echo "This is a release tag for version $TAG_NAME") --repo ${{ github.repository }} --title $TAG_NAME
