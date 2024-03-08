@@ -10,3 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Create Release Tag
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.0
+          release_name: Release v1.0.0
+          body: |
+            This is a release tag for version 1.0.0
