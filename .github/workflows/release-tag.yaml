@@ -11,13 +11,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set tag name
         id: tag
-        run: echo "::set-output name=tag::v$(date +'%Y%m%d')-1"
+        run: |
+          DATE=$(date +'%Y.%m.%d')
+          RELEASE_COUNT=$(git tag --list "${DATE}.*" | wc -l)
+          RELEASE_COUNT=$((RELEASE_COUNT+1))
+          echo "::set-output name=tag::${DATE}.${RELEASE_COUNT}"
       - name: Create Release Tag
-        uses: actions/create-release@v1
+        run: |
+          TAG_NAME=${{ steps.tag.outputs.tag }}
+          gh release create $TAG_NAME -F <(echo "This is a release tag for version $TAG_NAME") --repo ${{ github.repository }} --title $TAG_NAME
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
-          body: |
-            This is a release tag for version ${{ steps.tag.outputs.tag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
