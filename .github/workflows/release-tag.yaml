@@ -9,12 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set tag name
+        id: tag
+        run: echo "::set-output name=tag::v$(date +'%Y%m%d')-1"
       - name: Create Release Tag
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.0
-          release_name: Release v1.0.0
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
           body: |
-            This is a release tag for version 1.0.0
+            This is a release tag for version ${{ steps.tag.outputs.tag }}
