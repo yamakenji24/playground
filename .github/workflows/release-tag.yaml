@@ -1,0 +1,12 @@
+name: "Release Tag"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  main:
+    name: Create Release Tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Release Tag
