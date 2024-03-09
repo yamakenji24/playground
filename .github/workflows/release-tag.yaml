@@ -2,9 +2,6 @@ name: "Release Tag"
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -23,7 +20,15 @@ jobs:
         run: |
           IMAGE_TAG="$(date +"%Y.%m.%-d").$(git tag | (grep "^`date +"%Y.%m.%-d"`" || true) | wc -l | awk '{print $1+1}')"
           echo "::set-output name=tag::${IMAGE_TAG}"
+      - name: Get merged PRs
+        id: prs
+        run: |
+          PREV_RELEASE_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`)
+          PR_LIST=$(gh pr list --state merged --json title,url --jq '.[] | "- [\(.title)](\(.url))"' | grep -A 10000 "$PREV_RELEASE_TAG" | grep -B 10000 "${{ steps.tag.outputs.tag }}" | sed "/$PREV_RELEASE_TAG/d" | sed "/${{ steps.tag.outputs.tag }}/d")
+          echo "::set-output name=list::$PR_LIST"
       - name: Create Release Tag
         run: |
           TAG_NAME=${{ steps.tag.outputs.tag }}
-          gh release create $TAG_NAME -F <(echo "This is a release tag for version $TAG_NAME") --repo ${{ github.repository }} --title $TAG_NAME
+          PR_LIST=${{ steps.prs.outputs.list }}
+          echo -e "This is a release tag for version $TAG_NAME\n\nMerged PRs:\n$PR_LIST" > release_notes.txt
+          gh release create $TAG_NAME -F release_notes.txt --repo ${{ github.repository }} --title $TAG_NAME
