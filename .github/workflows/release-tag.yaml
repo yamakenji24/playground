@@ -23,9 +23,12 @@ jobs:
       - name: Get merged PRs
         id: prs
         run: |
-          PREV_RELEASE_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`)
-          PR_LIST=$(gh pr list --state merged --json title,url --jq '.[] | "- [\(.title)](\(.url))"' | grep -A 10000 "$PREV_RELEASE_TAG" | grep -B 10000 "${{ steps.tag.outputs.tag }}" | sed "/$PREV_RELEASE_TAG/d" | sed "/${{ steps.tag.outputs.tag }}/d")
-          echo "::set-output name=list::$PR_LIST"
+          PR_LIST=""
+          for PR_NUMBER in $(git log --ancestry-path --oneline $(git rev-list --tags --max-count=1).. | grep -o '#[0-9]\+' | tr -d '#'); do
+            PR_LIST+=$(gh pr view $PR_NUMBER --json title,url --jq '"- [\(.title)](\(.url))"')
+            PR_LIST+=$'\n'
+          done
+          echo "::set-output name=list::$PR_LIST"       
       - name: Create Release Tag
         run: |
           TAG_NAME=${{ steps.tag.outputs.tag }}
