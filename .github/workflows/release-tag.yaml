@@ -33,4 +33,5 @@ jobs:
         run: |
           TAG_NAME=${{ steps.tag.outputs.tag }}
           PR_LIST="${{ steps.prs.outputs.list }}"
-
+          printf "This is a release tag for version %s\n\nMerged PRs:\n%s" "$TAG_NAME" "$PR_LIST" > release_notes.txt
+          gh release create $TAG_NAME -F release_notes.txt --repo ${{ github.repository }} --title $TAG_NAME
