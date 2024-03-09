@@ -32,5 +32,5 @@ jobs:
       - name: Create Release Tag
         run: |
           TAG_NAME=${{ steps.tag.outputs.tag }}
-          PR_LIST=${{ steps.prs.outputs.list }}
+          PR_LIST="${{ steps.prs.outputs.list }}"
 
