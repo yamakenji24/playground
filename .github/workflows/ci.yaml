@@ -1,0 +1,13 @@
+name: ci
+
+on:
+  push:
+    paths:
+      - 'next/**'
+
+jobs:
+  ci:
+    - name: Test
+      runs-on: ubuntu-latest
+    - name: Checkout
+      uses: actions/checkout@v3
