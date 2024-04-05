@@ -1,0 +1,22 @@
+{
+  "core": {
+    "workingDir": ".reg",
+    "actualDir": "__screenshots__",
+    "thresholdRate": 0,
+    "addIgnore": true,
+    "ximgdiff": {
+      "invocationType": "client"
+    }
+  },
+  "plugins": {
+    "reg-keygen-git-hash-plugin": true,
+    "reg-publish-s3-plugin": {
+      "bucketName": "$S3_BUCKET_NAME",
+      "acl": "private",
+      "sdkOptions": {
+        "bucketName": "$S3_BUCKET_NAME",
+        "region": "$REGION"
+      }
+    }
+  }
+}
