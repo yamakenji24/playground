@@ -1,0 +1,45 @@
+name: VRT
+on:
+  pull_request:
+    paths:
+      - 'next/page-playwright-msw/**'
+  push:
+    paths:
+      - 'next/page-playwright-msw/**'
+
+defaults:
+  run:
+    working-directory: next/page-playwright-msw
+
+env:
+  REG_CLIENT_ID: ${{ secrets.REG_CLIENT_ID }}
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+  REGION: ${{ secrets.REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: install dependencies
+        run: npm ci
+      - name: build storybook
+        run: npm run build-storybook
+      - name: screenshots stories
+        run: npm run storycap:serve
+      - name: vrt
+        run: npm run regression
+        env:
+          REG_CLIENT_ID: ${{ secrets.REG_CLIENT_ID }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          REGION: ${{ secrets.REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
